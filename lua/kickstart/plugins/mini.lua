@@ -35,6 +35,7 @@ return {
       require('mini.statusline').setup()
       require('mini.files').setup()
       require('mini.pairs').setup()
+      require('mini.bufremove').setup()
       require('mini.indentscope').setup()
       require('mini.notify').setup()
       require('mini.trailspace').setup()
@@ -55,10 +56,18 @@ return {
           hex_color = hipatterns.gen_highlighter.hex_color(),
         },
       }
+      local map_multistep = require('mini.keymap').map_multistep
 
+      map_multistep('i', '<Tab>', { 'pmenu_next' })
+      map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
+      map_multistep('i', '<CR>', { 'pmenu_accept', 'minipairs_cr' })
+      map_multistep('i', '<BS>', { 'minipairs_bs' })
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
+    keys = {
+      { '<leader>e', '<cmd>lua MiniFiles.open()<cr>', desc = 'File Explorer' },
+    },
   },
 }
 -- vim: ts=2 sts=2 sw=2 et
