@@ -31,6 +31,30 @@ return {
       statusline.section_location = function()
         return '%2l:%-2v'
       end
+      require('mini.tabline').setup()
+      require('mini.statusline').setup()
+      require('mini.files').setup()
+      require('mini.pairs').setup()
+      require('mini.indentscope').setup()
+      require('mini.notify').setup()
+      require('mini.trailspace').setup()
+      require('mini.icons').setup()
+      require('mini.diff').setup()
+      require('mini.git').setup()
+      require('mini.comment').setup()
+      local hipatterns = require 'mini.hipatterns'
+      hipatterns.setup {
+        highlighters = {
+          -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
+          fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
+          hack = { pattern = '%f[%w]()HACK()%f[%W]', group = 'MiniHipatternsHack' },
+          todo = { pattern = '%f[%w]()TODO()%f[%W]', group = 'MiniHipatternsTodo' },
+          note = { pattern = '%f[%w]()NOTE()%f[%W]', group = 'MiniHipatternsNote' },
+
+          -- Highlight hex color strings (`#rrggbb`) using that color
+          hex_color = hipatterns.gen_highlighter.hex_color(),
+        },
+      }
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
