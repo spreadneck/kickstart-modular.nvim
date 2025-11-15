@@ -1,40 +1,53 @@
+local M = {}
 local pick = require 'core.plugins.mini.pick'
+local statusline = require 'core.plugins.mini.statusline'
+local clue = require 'core.plugins.mini.clue'
+local hipatterns = require 'core.plugins.mini.hipatterns'
 
-return {
-  {
-    'nvim-mini/mini.nvim',
-    lazy = false,
-    priority = 100,
-    config = function()
-      require('mini.ai').setup { n_lines = 500 }
-      require('mini.surround').setup()
+function M.config()
+  return {
+    {
+      'nvim-mini/mini.nvim',
+      lazy = false,
+      priority = 100,
+      config = function()
+        -- Base modules that work with the default `.setup()`.
+        local mini_plugins = {
+          'ai',
+          'surround',
+          'files',
+          'pairs',
+          'bufremove',
+          'indentscope',
+          'notify',
+          'trailspace',
+          'icons',
+          'diff',
+          'git',
+          'comment',
+          'extra',
+        }
 
-      require('core.plugins.mini.statusline')()
-      require('mini.files').setup()
-      require('mini.pairs').setup()
-      require('mini.bufremove').setup()
-      require('mini.indentscope').setup()
-      require('mini.notify').setup()
-      require('mini.trailspace').setup()
-      require('mini.icons').setup()
-      require('mini.diff').setup()
-      require('mini.git').setup()
-      require('mini.comment').setup()
+        for _, plugin in ipairs(mini_plugins) do
+          require('mini.' .. plugin).setup()
+        end
 
-      local map_multistep = require('mini.keymap').map_multistep
-      map_multistep('i', '<Tab>', { 'pmenu_next' })
-      map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
-      map_multistep('i', '<CR>', { 'pmenu_accept', 'minipairs_cr' })
-      map_multistep('i', '<BS>', { 'minipairs_bs' })
+        -- Modules below carry extra configuration and therefore stay bespoke.
+        statusline.setup()
+        clue.setup()
+        hipatterns.setup()
 
-      pick.setup()
-      pick.set_keymaps()
-      require('core.plugins.mini.extra')()
-      require('core.plugins.mini.clue')()
-      require('core.plugins.mini.hipatterns')()
-    end,
-    init = function()
-      vim.keymap.set('n', '<leader>e', '<cmd>lua MiniFiles.open()<cr>', { desc = 'File Explorer' })
-    end,
-  },
-}
+        -- mini.pick needs custom setup and its own keymaps.
+        pick.setup()
+        pick.set_keymaps()
+      end,
+      init = function()
+        -- Default toggle for MiniFiles so it is available before lazy-loading finishes.
+        vim.keymap.set('n', '<leader>e', '<cmd>lua MiniFiles.open()<cr>', { desc = 'File Explorer' })
+      end,
+    },
+  }
+end
+
+return M
+-- vim: ts=2 sts=2 sw=2 et

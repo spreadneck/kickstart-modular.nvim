@@ -1,4 +1,6 @@
-return function()
+local M = {}
+
+function M.setup()
   local statusline = require 'mini.statusline'
 
   local function lsp_status()
@@ -36,3 +38,6 @@ return function()
   require('mini.tabline').setup()
   require('mini.statusline').setup()
 end
+
+return M
+-- vim: ts=2 sts=2 sw=2 et

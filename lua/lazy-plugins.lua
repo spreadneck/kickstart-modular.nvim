@@ -9,8 +9,8 @@
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
-local plugin_specs = vim.list_extend({}, require('core.plugins').specs)
-table.insert(plugin_specs, { import = 'plugins.user' })
+local plugin_specs = vim.list_extend({}, require 'core.plugins')
+plugin_specs = vim.list_extend(plugin_specs, require 'user.plugins')
 
 require('lazy').setup(plugin_specs, {
   ui = {

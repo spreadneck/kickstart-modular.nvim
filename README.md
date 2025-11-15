@@ -23,14 +23,14 @@ lua/
 │   ├── keymaps.lua
 │   └── plugins/
 │       └── mini/...
-├── plugins/
-│   └── user/
+├── user/
+│   └── plugins/
 ├── lazy-bootstrap.lua
 └── lazy-plugins.lua
 ```
 
 - `core/`: always-on config and first-class plugins
-- `plugins/user/`: drop-in Lazy specs (automatically imported)
+- `user/plugins/`: drop-in Lazy specs (automatically imported)
 
 ## Mini stack
 
@@ -48,7 +48,7 @@ lua/
 - `blink.cmp`: completion with LuaSnip/friendly-snippets
 - `conform`: formatting
 - `nvim-lint`: linting
-- User extras (under `plugins/user/`): Hybrid colorscheme, Neogit,
+- User extras (under `user/plugins/`): Hybrid colorscheme, Neogit,
 - render-markdown, zk, etc.
 
 ## Keymaps
@@ -62,7 +62,7 @@ Core maps live in `lua/core/keymaps.lua`. Highlights:
 ## Maintenance
 
 - `:Lazy sync` after pulling `:Lazy clean` to prune removed plugins Add new
-- specs under `lua/plugins/user/` (return a table or list) Keymaps/autocmds
+- specs under `lua/user/plugins/` (return a table or list) Keymaps/autocmds
 - belong either in `core/keymaps.lua` or inside the plugin module
 
 ## License

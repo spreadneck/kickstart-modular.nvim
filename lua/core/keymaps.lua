@@ -18,3 +18,4 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus up' })
 
 -- Alternate buffer
 vim.keymap.set('n', '<BS>', '<cmd>edit #<cr>', { desc = 'Go to alternate buffer' })
+-- vim: ts=2 sts=2 sw=2 et
