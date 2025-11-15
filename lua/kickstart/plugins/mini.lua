@@ -43,6 +43,7 @@ return {
       require('mini.diff').setup()
       require('mini.git').setup()
       require('mini.comment').setup()
+      require('mini.pick').setup()
       local hipatterns = require 'mini.hipatterns'
       hipatterns.setup {
         highlighters = {
