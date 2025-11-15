@@ -1,5 +1,4 @@
--- vim_opts
-local vim_opts = require('custom.utils').vim_opts
+local vim_opts = require('core.utils').vim_opts
 
 vim.opt.shortmess:append 'sIW'
 
@@ -35,7 +34,6 @@ vim_opts {
     numberwidth = 6,
     guicursor = 'n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20',
     autowrite = true,
-    autochdir = true,
     termguicolors = true,
     sessionoptions = 'blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions',
     completeopt = 'menu,menuone,noselect',

@@ -1,5 +1,6 @@
 return {
   'zk-org/zk-nvim',
+  ft = 'markdown',
 
   keys = {
     -- New note
