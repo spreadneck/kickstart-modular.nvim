@@ -30,6 +30,21 @@ local mode_hl_map = {
   other = 'MiniStatuslineModeOther',
 }
 
+local diag_cache = {}
+local diag_segments = {
+  { severity = vim.diagnostic.severity.ERROR, icon = ' ', hl = 'MiniStatuslineDiagError' },
+  { severity = vim.diagnostic.severity.WARN, icon = ' ', hl = 'MiniStatuslineDiagWarn' },
+  { severity = vim.diagnostic.severity.INFO, icon = ' ', hl = 'MiniStatuslineDiagInfo' },
+  { severity = vim.diagnostic.severity.HINT, icon = ' ', hl = 'MiniStatuslineDiagHint' },
+}
+
+local function refresh_diag_cache(bufnr)
+  if not bufnr or bufnr <= 0 or not vim.api.nvim_buf_is_valid(bufnr) then
+    return
+  end
+  diag_cache[bufnr] = vim.diagnostic.count(bufnr)
+end
+
 local function apply_statusline_highlights()
   local base_bg = palette.base00
   local fg = palette.base05
@@ -64,12 +79,34 @@ function M.apply_statusline()
     callback = apply_statusline_highlights,
   })
 
+  local diag_group = vim.api.nvim_create_augroup('mini-ui-diagnostics', { clear = true })
+  vim.api.nvim_create_autocmd({ 'DiagnosticChanged', 'BufWinEnter' }, {
+    group = diag_group,
+    callback = function(event) refresh_diag_cache(event.buf) end,
+  })
+  vim.api.nvim_create_autocmd('BufDelete', {
+    group = diag_group,
+    callback = function(event)
+      if event.buf then diag_cache[event.buf] = nil end
+    end,
+  })
+  refresh_diag_cache(vim.api.nvim_get_current_buf())
+
   local statusline = require 'mini.statusline'
 
   local function lsp_status()
     local clients = vim.lsp.get_clients { bufnr = 0 }
     if #clients == 0 then return '' end
-    return ' ' .. clients[1].name
+    local names, seen = {}, {}
+    for _, client in ipairs(clients) do
+      if client.name and client.name ~= '' and not seen[client.name] then
+        names[#names + 1] = client.name
+        seen[client.name] = true
+      end
+    end
+    table.sort(names)
+    if #names == 0 then return '' end
+    return ' ' .. table.concat(names, ', ')
   end
 
   statusline.setup {
@@ -93,27 +130,10 @@ function M.apply_statusline()
           components[#components + 1] = { hl = 'MiniStatuslineGit', strings = { git } }
         end
 
-        local counts = { error = 0, warn = 0, info = 0, hint = 0 }
-        for _, diag in ipairs(vim.diagnostic.get(0)) do
-          if diag.severity == vim.diagnostic.severity.ERROR then
-            counts.error = counts.error + 1
-          elseif diag.severity == vim.diagnostic.severity.WARN then
-            counts.warn = counts.warn + 1
-          elseif diag.severity == vim.diagnostic.severity.INFO then
-            counts.info = counts.info + 1
-          elseif diag.severity == vim.diagnostic.severity.HINT then
-            counts.hint = counts.hint + 1
-          end
-        end
-
-        local diag_segments = {
-          { key = 'error', icon = ' ', hl = 'MiniStatuslineDiagError' },
-          { key = 'warn', icon = ' ', hl = 'MiniStatuslineDiagWarn' },
-          { key = 'info', icon = ' ', hl = 'MiniStatuslineDiagInfo' },
-          { key = 'hint', icon = ' ', hl = 'MiniStatuslineDiagHint' },
-        }
+        local bufnr = vim.api.nvim_get_current_buf()
+        local counts = diag_cache[bufnr] or {}
         for _, seg in ipairs(diag_segments) do
-          local value = counts[seg.key]
+          local value = counts[seg.severity] or 0
           if value > 0 then
             components[#components + 1] = { hl = seg.hl, strings = { seg.icon .. value .. ' ' } }
           end
