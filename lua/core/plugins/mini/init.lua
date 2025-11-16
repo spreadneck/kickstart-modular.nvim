@@ -1,8 +1,29 @@
 local M = {}
-local pick = require 'core.plugins.mini.pick'
-local statusline = require 'core.plugins.mini.statusline'
-local clue = require 'core.plugins.mini.clue'
-local hipatterns = require 'core.plugins.mini.hipatterns'
+
+local components = {
+  ui = require 'core.plugins.mini.ui',
+  basics = require 'core.plugins.mini.basics',
+  pick = require 'core.plugins.mini.pick',
+  clue = require 'core.plugins.mini.clue',
+  hipatterns = require 'core.plugins.mini.hipatterns',
+}
+
+local simple_modules = {
+  'ai',
+  'surround',
+  'files',
+  'pairs',
+  'bufremove',
+  'indentscope',
+  'notify',
+  'trailspace',
+  'icons',
+  'diff',
+  'git',
+  'comment',
+  'extra',
+}
+
 
 function M.config()
   return {
@@ -11,35 +32,21 @@ function M.config()
       lazy = false,
       priority = 100,
       config = function()
-        -- Base modules that work with the default `.setup()`.
-        local mini_plugins = {
-          'ai',
-          'surround',
-          'files',
-          'pairs',
-          'bufremove',
-          'indentscope',
-          'notify',
-          'trailspace',
-          'icons',
-          'diff',
-          'git',
-          'comment',
-          'extra',
-        }
+        components.ui.setup()
 
-        for _, plugin in ipairs(mini_plugins) do
+        for _, plugin in ipairs(simple_modules) do
           require('mini.' .. plugin).setup()
         end
 
         -- Modules below carry extra configuration and therefore stay bespoke.
-        statusline.setup()
-        clue.setup()
-        hipatterns.setup()
+        components.basics.setup()
+        components.ui.apply_statusline()
+        components.clue.setup()
+        components.hipatterns.setup()
 
         -- mini.pick needs custom setup and its own keymaps.
-        pick.setup()
-        pick.set_keymaps()
+        components.pick.setup()
+        components.pick.set_keymaps()
       end,
       init = function()
         -- Default toggle for MiniFiles so it is available before lazy-loading finishes.

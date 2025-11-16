@@ -6,7 +6,6 @@ local base_specs = {
 }
 
 local modules = {
-  require 'user.plugins.color',
   require 'user.plugins.neogit',
   require 'user.plugins.oatmeal',
   require 'user.plugins.render-markdown',

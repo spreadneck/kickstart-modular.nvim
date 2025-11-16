@@ -11,7 +11,7 @@ vim_opts {
     undofile = true,
     ignorecase = true,
     smartcase = true,
-    signcolumn = 'yes',
+    signcolumn = 'no',
     colorcolumn = '100',
     updatetime = 100,
     timeoutlen = 300,
@@ -31,7 +31,7 @@ vim_opts {
     smartindent = true,
     autoindent = true,
     smarttab = true,
-    numberwidth = 6,
+    numberwidth = 4,
     guicursor = 'n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20',
     autowrite = true,
     termguicolors = true,
@@ -44,4 +44,5 @@ vim_opts {
 vim.schedule(function()
   vim.o.clipboard = 'unnamedplus'
 end)
+
 -- vim: ts=2 sts=2 sw=2 et
