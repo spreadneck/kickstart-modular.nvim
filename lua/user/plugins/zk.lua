@@ -1,7 +1,37 @@
 local M = {}
+local utils = require 'core.utils'
+
+local function zk_insert_link()
+  local util = require 'zk.util'
+  local zk = require 'zk'
+  local api = require 'zk.api'
+
+  local ok_loc, location = pcall(util.get_lsp_location_from_selection)
+  local ok_text, selected_text = pcall(util.get_selected_text)
+
+  if not ok_loc or not ok_text or not location or not selected_text or selected_text == '' then
+    ok_loc, location = pcall(util.get_lsp_location_from_caret)
+    selected_text = nil
+  end
+
+  zk.pick_notes({}, { title = 'Zk Insert link', multi_select = false }, function(note)
+    if not note then
+      return
+    end
+    local link_opts = {}
+    if selected_text and selected_text ~= '' then
+      link_opts.title = selected_text
+    end
+    api.link(note.path, location, nil, link_opts, function(err, res)
+      if not res then
+        error(err)
+      end
+    end)
+  end)
+end
 
 local function zk_command(name, opts)
-  return function()
+  return utils.with_prompt(function()
     local cmd = require('zk.commands').get(name)
     local params = nil
     if type(opts) == 'function' then
@@ -10,7 +40,7 @@ local function zk_command(name, opts)
       params = vim.deepcopy(opts)
     end
     cmd(params)
-  end
+  end)
 end
 
 local function zk_new(opts_fn)
@@ -23,7 +53,23 @@ end
 
 local function zk_keymaps()
   local defs = {
-    { lhs = '<leader>zn', desc = 'Zk: New note', handler = zk_command 'ZkNew' },
+    {
+      lhs = '<leader>zn',
+      desc = 'Zk: New note',
+      handler = utils.with_prompt(function()
+        utils.prompt_input {
+          prompt = 'Title',
+          on_submit = function(title)
+            local params = {}
+            if title and title ~= '' then
+              params.title = title
+            end
+            require('zk.commands').get('ZkNew')(params)
+          end,
+          on_cancel = function() end,
+        }
+      end),
+    },
     {
       lhs = '<leader>zd',
       desc = 'Zk: Daily note',
@@ -34,7 +80,7 @@ local function zk_keymaps()
     { lhs = '<leader>zs', desc = 'Zk: Search notes', handler = zk_command 'ZkNotes' },
     { lhs = '<leader>zw', desc = 'Zk: Work notes (last 3 days)', handler = zk_command('ZkWorkNotes') },
     { lhs = '<leader>zb', desc = 'Zk: Backlinks', handler = zk_command 'ZkBacklinks' },
-    { lhs = '<leader>zl', desc = 'Zk: Insert link', handler = zk_command 'ZkInsertLink' },
+    { lhs = '<leader>zl', desc = 'Zk: Insert link', handler = utils.with_prompt(zk_insert_link) },
     {
       lhs = '<leader>zL',
       desc = 'Zk: Insert new linked note',

@@ -11,7 +11,7 @@ vim_opts {
     undofile = true,
     ignorecase = true,
     smartcase = true,
-    signcolumn = 'no',
+    signcolumn = 'yes',
     colorcolumn = '100',
     updatetime = 100,
     timeoutlen = 300,

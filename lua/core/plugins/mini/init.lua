@@ -24,7 +24,6 @@ local simple_modules = {
   'extra',
 }
 
-
 function M.config()
   return {
     {

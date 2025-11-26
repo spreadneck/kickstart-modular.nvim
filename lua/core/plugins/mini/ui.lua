@@ -1,7 +1,7 @@
 local M = {}
 
 -- Base16 palette matching HoNamDuong/hybrid.nvim as closely as possible.
-local palette = {
+local hybrid_palette = {
   base00 = '#1d1f21',
   base01 = '#282a2e',
   base02 = '#373b41',
@@ -20,6 +20,8 @@ local palette = {
   base0F = '#a3685a',
 }
 
+local palette = vim.deepcopy(hybrid_palette)
+
 local mode_hl_map = {
   normal = 'MiniStatuslineModeNormal',
   insert = 'MiniStatuslineModeInsert',
@@ -28,6 +30,19 @@ local mode_hl_map = {
   command = 'MiniStatuslineModeCommand',
   terminal = 'MiniStatuslineModeTerminal',
   other = 'MiniStatuslineModeOther',
+}
+local mode_icon = {
+  n = '🅝',
+  i = '🅘',
+  v = '🅥',
+  V = '🅥',
+  ["\22"] = '🅥',
+  c = '🅒',
+  R = '🅡',
+  r = '🅡',
+  t = '🅣',
+  s = '🅢',
+  S = '🅢',
 }
 
 local diag_cache = {}
@@ -117,6 +132,9 @@ function M.apply_statusline()
           trunc_width = 120,
           mode_hl = mode_hl_map,
         }
+        if mode_icon[mode] then
+          mode = mode_icon[mode]
+        end
         local git = statusline.section_git { icon = ' ' }
         local filename = statusline.section_filename { trunc_width = 140 }
         local fileinfo = statusline.section_fileinfo { trunc_width = 120 }
