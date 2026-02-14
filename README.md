@@ -56,7 +56,7 @@ Personal Neovim build focused on speed, zero fluff, and a consistent DX across m
 | `core.plugins.treesitter` | Syntax/indent with `ensure_installed` for common languages. |
 | `core.plugins.lspconfig` | Sets up `lazydev`, `lua_ls`, shared LSP keymaps, diagnostics, and Mason tooling. |
 | `core.plugins.blink-cmp` | Completion engine with LuaSnip + lazydev integration and `super-tab` keymap preset. |
-| `core.plugins.conform` | Formatting with per-filetype config (`stylua` default). |
+| `core.plugins.conform` | Formatting with per-filetype config (`stylua`, `mdformat` for markdown). |
 | `core.plugins.lint` | `nvim-lint` + autocmds for markdown/json linting. |
 
 #### Mini Submodules
@@ -87,7 +87,7 @@ Personal Neovim build focused on speed, zero fluff, and a consistent DX across m
 
 - `lazydev`: enriches Lua language intelligence by preloading Neovim runtime types and keeping `lua_ls` aware of config/plugin files.
 - `nvim-lspconfig`: core LSP client setup with buffer-local keymaps, diagnostic styling, autocommands for highlights/inlay hints, and Mason integration.
-- `mason.nvim` + `mason-lspconfig.nvim` + `mason-tool-installer.nvim`: ensure servers (`lua_ls`, future entries) plus formatters (e.g., `stylua`) are installed automatically.
+- `mason.nvim` + `mason-lspconfig.nvim` + `mason-tool-installer.nvim`: ensure servers (`lua_ls`, future entries) plus formatters (e.g., `stylua`, `mdformat`, `mdformat-frontmatter`) are installed automatically.
 - `j-hui/fidget.nvim`: lightweight status indicator to surface LSP progress without cluttering the UI.
 
 ### User Layer (`lua/user/plugins/`)
