@@ -30,6 +30,14 @@ function M.config()
         end,
         formatters_by_ft = {
           lua = { 'stylua' },
+          markdown = { 'mdformat' },
+        },
+        formatters = {
+          mdformat = {
+            -- Load common markdown format plugins when available.
+            -- Example: install `mdformat-frontmatter` to enable frontmatter support.
+            args = { '$FILENAME' },
+          },
         },
       },
     },
